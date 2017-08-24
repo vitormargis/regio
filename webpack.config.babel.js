@@ -1,13 +1,19 @@
-import {join} from 'path'
+import { join } from 'path';
 
 const include = join(__dirname, 'src')
 
 export default {
-  entry: './index',
+  entry: {
+  'bundle': join(__dirname, './index')
+  },
   output: {
-    path: join(__dirname, 'dist'),
+    path: join(__dirname, './dist'),
+    filename: '[name].js',
     libraryTarget: 'umd',
-    library: 'spotifyWrapper',
+    library: 'Regio',
+  },
+  devServer: {
+    contentBase: join(__dirname, './examples'),
   },
   devtool: 'source-map',
   module: {

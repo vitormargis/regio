@@ -3,29 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <title>Spotify Wrapper Test</title>
+  <style>
+  .canvas {
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: url(https://raw.githubusercontent.com/vitormargis/vizualize/master/presenter/layouts/01_dashboard_serpar_antecipar_confirmacao.jpg);
+  border: 15px solid #AAA;
+  cursor: default;
+}
+
+.regio {
+  background: rgba(255, 0, 255, .25);
+  border: 1px solid rgba(255, 0, 255, .25);
+  cursor: pointer;
+  position: absolute;
+}
+
+.regio-selecting .regio{
+  pointer-events: none;
+}
+
+.selecting {
+  pointer-events: none;
+  cursor: default;
+  z-index: 9;
+}
+
+.regio-active {
+  background: rgba(255, 255, 255, .75);
+}
+
+.edit {
+  display: block;
+  position: absolute;
+  width: 40px;
+  height: 18px;
+  background: #eee;
+  right: 0;
+  bottom: 0;
+  line-height: 18px;
+}
+
+.edit:before {
+    content: 'Edit';
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    font-size: 12px;
+    font-family: sans-serif;
+    color: #999;
+}
+
+.rg-removable {
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 18px;
+  background: #eee;
+  right: 0;
+  top: 0;
+  line-height: 18px;
+}
+
+.rg-removable:before {
+    content: 'x';
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    font-size: 12px;
+    font-family: sans-serif;
+    color: #999;
+}
+
+input {
+  position: absolute;
+  z-index: 999;
+  top: -10000px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+</style>
 </head>
 <body>
 
-<div id="albums"></div>
+  <div class="canvas"></div>
 
+
+<script src="./bundle.js"></script>
 <script src="../dist/spotify-wrapper.umd.js"></script>
 
 <script>
-  const spotify = new SpotifyWrapper({
-    token: 'BQAvnfpiNS3Jw8NA8VT56xtmHmIwyLVd9S1qLu6-zDN-hARckKKcqbsFc8U2BmDM05sjC9uulBKPLNG7mZpnDdtVw4YO13UB6R5TfOEaUbh-NteOruBzJVBRH-whR0aPTTaQvMjsM7AAuqgYRAs'
+  console.log(Regio);
+  var canvasElement = document.getElementsByClassName('canvas')[0]
+
+  var canvas = new Regio(canvasElement, {
+    movable: false,
+    drawable: true,
+    resizable: false,
+    removable: true
   })
 
-  const albums = spotify.search.albums('Soundgarden');
-  const albumsEl = document.getElementById('albums');
+  function g1o(){
+    console.log('go1');
+  }
 
-  albums
-    .then(data => {
-      markup = data.albums.items.map(item =>
-        `<img src='${item.images[0].url}' alt='${item.name}' />`
-      ).join('');
+  function g2o(){
+    console.log('go2');
+  }
 
-      albumsEl.innerHTML = markup;
+  function go(to){
+    window.open(to);
+  }
+
+  var textarea = document.createElement('input')
+
+  canvasElement.appendChild(textarea)
+
+  canvas.append({
+    html: '<div class="edit"></div>',
+    callback: function(el){
+    var element = el.parentNode
+    element.addEventListener(event || 'click', function(event){
+      if (!event.target.className.includes('rg-append')) return;
+      console.log(element);
+    });
+    var textareVal = false
+    var currentValue = canvas.areas()[element.index].to || ''
+    textarea.value = currentValue;
+    textarea.style.top = parseInt(element.style.top) + parseInt(element.style.height) + 10 + 'px'
+    textarea.style.right = element.style.right
+    textarea.style.bottom = element.style.bottom || element.style.top
+    textarea.style.left = element.style.left
+    textarea.style.width = element.style.width
+    textarea.style.height = '30px'
+    textarea.style.display = 'block'
+    textarea.focus();
+    textarea.addEventListener('blur', function(){
+      if (textareVal) return;
+      textareVal = true;
+      canvas.areas()[element.index].to = this.value;
+      canvas.areas()[element.index].click = this.value && go.bind(this, this.value)
+      textarea.style.display = 'none'
     })
+  }})
+
+  canvas.add([
+    {"width":"271px","height":"141px","top":"143px","right":"","bottom":"","left":"418px","click":g1o},
+    {"width":"187px","height":"149px","top":"182px","right":"330px","bottom":"","left":"","click":g2o},
+    {"width":"369px","height":"193px","top":"427px","right":"","bottom":"","left":"469px"}
+  ])
+
+  canvas.remove();
+
 </script>
+
 </body>
 </html>
