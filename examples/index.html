@@ -12,8 +12,10 @@
   top: 0;
   left: 0;
   background: url(https://raw.githubusercontent.com/vitormargis/vizualize/master/presenter/layouts/01_dashboard_serpar_antecipar_confirmacao.jpg);
+  background-size: 100%;
   border: 15px solid #AAA;
   cursor: default;
+  background-repeat: no-repeat;
 }
 
 .regio {
@@ -86,78 +88,77 @@ input {
   padding: 10px;
   box-sizing: border-box;
 }
+
+.show-area-data {
+  z-index: 9999;
+  right: 15px;
+  top: 15px;
+  position: fixed;
+  background: #FFF;
+  padding: 10px;
+  font-family: sans-serif;
+  cursor: pointer;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2)
+
+}
+
 </style>
 </head>
 <body>
 
   <div class="canvas"></div>
+  <a class="show-area-data">Show area data</a>
 
-
-<script src="./bundle.js"></script>
-<script src="../dist/spotify-wrapper.umd.js"></script>
+<script src="./regio.min.js"></script>
+<!-- <script src="../dist/spotify-wrapper.umd.min.js"></script> -->
 
 <script>
-  console.log(Regio);
   var canvasElement = document.getElementsByClassName('canvas')[0]
-
-  var canvas = new Regio(canvasElement, {
-    movable: false,
-    drawable: true,
-    resizable: false,
-    removable: true
-  })
-
-  function g1o(){
-    console.log('go1');
-  }
-
-  function g2o(){
-    console.log('go2');
-  }
-
-  function go(to){
-    window.open(to);
-  }
-
+  var showAreaBtn = document.getElementsByClassName('show-area-data')[0]
   var textarea = document.createElement('input')
+  var canvas = new Regio(canvasElement {
+    drawable: true,
+    removable: true
+  });
 
+  function go(to){ window.open(to); }
+
+  textarea.placeholder = "Type an URL";
   canvasElement.appendChild(textarea)
 
   canvas.append({
     html: '<div class="edit"></div>',
-    callback: function(el){
-    var element = el.parentNode
-    element.addEventListener(event || 'click', function(event){
-      if (!event.target.className.includes('rg-append')) return;
-      console.log(element);
-    });
+    callback: function({ area }){
     var textareVal = false
-    var currentValue = canvas.areas()[element.index].to || ''
+    var currentValue = canvas.areas()[area.index].to || ''
     textarea.value = currentValue;
-    textarea.style.top = parseInt(element.style.top) + parseInt(element.style.height) + 10 + 'px'
-    textarea.style.right = element.style.right
-    textarea.style.bottom = element.style.bottom || element.style.top
-    textarea.style.left = element.style.left
-    textarea.style.width = element.style.width
+    textarea.style.top = parseInt(area.style.top) + parseInt(area.style.height) + 10 + 'px'
+    textarea.style.right = area.style.right
+    textarea.style.bottom = area.style.bottom || area.style.top
+    textarea.style.left = area.style.left
+    textarea.style.width = area.style.width
     textarea.style.height = '30px'
     textarea.style.display = 'block'
     textarea.focus();
     textarea.addEventListener('blur', function(){
       if (textareVal) return;
       textareVal = true;
-      canvas.areas()[element.index].to = this.value;
-      canvas.areas()[element.index].click = this.value && go.bind(this, this.value)
+      canvas.areas()[area.index].to = this.value;
+      canvas.areas()[area.index].click = this.value && go.bind(this, this.value)
       textarea.style.display = 'none'
     })
   }})
 
   canvas.add([
-    {"width":"271px","height":"141px","top":"143px","right":"","bottom":"","left":"418px","click":g1o},
-    {"width":"187px","height":"149px","top":"182px","right":"330px","bottom":"","left":"","click":g2o},
-    {"width":"369px","height":"193px","top":"427px","right":"","bottom":"","left":"469px"}
+    {"width":"250px","height":"90px","top":"0","right":"","bottom":"","left":"0","to":"https://www.ticketcarportalrede.com.br/#/login","click":go.bind(this, "https://www.ticketcarportalrede.com.br/#/login")},
+    {"width":"250px","height":"90px","top":"200px","right":"","bottom":"","left":"0","to":"https://www.ticketcarportalrede.com.br/#/login","click":go.bind(this, "https://www.ticketcarportalrede.com.br/#/login")}
   ])
 
-  canvas.remove();
+  canvas.remove(1);
+
+  showAreaBtn.addEventListener('click', function(event) {
+    alert(JSON.stringify(canvas.areas()))
+  })
 
 </script>
 

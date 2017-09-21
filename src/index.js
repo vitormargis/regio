@@ -4,9 +4,9 @@ export default class Regio {
   constructor(element, options) {
     this.element = element;
     this.config = options || {
-      movable: true,
+      movable: false,
       drawable: true,
-      resizable: true,
+      resizable: false,
       removable: true
     }
 
@@ -79,18 +79,23 @@ export default class Regio {
       left: this.regio.selectingNode.style.left
     }
 
+    if (!area.width || parseInt(area.width) < 30) return;
+
     this.regio.areas.push(area)
-    this.add([area])
+    this.add([area], false)
 
     this.regio.isSelecting = false;
   }
 
-  areas(option) {
-    var nodes = document.getElementsByClassName('regio');
-    if (option === 'attrs') {
-      return this.regio.areas
-    }
-    return nodes
+  areas(key) {
+    if (key) return this.regio.areas[key];
+    return this.regio.areas;
+  }
+
+  nodes(key) {
+    const nodes = document.getElementsByClassName('regio');
+    if (key) return nodes[key];
+    return nodes;
   }
 
   _clickArea(event) {
@@ -109,22 +114,32 @@ export default class Regio {
     this.regio.toAppend = html;
     this.element.addEventListener(event || 'click', event => {
       if (!event.target.className.includes('rg-append')) return;
-      callback(event.target);
+      callback({element: event.target, area: event.target.parentNode});
     })
   }
 
-  remove(callback) {
+  remove(key, callback) {
+    console.log(key);
+    if (key) {
+      this.nodes(key).remove();
+      this.regio.areas = this.regio.areas.filter((item, index) =>
+        index !== key
+      )
+    }
     this.element.addEventListener('click', event => {
       if (!event.target.className.includes('rg-removable')) return;
       if (callback) callback(event.target.parentNode, event)
+      this.regio.areas = this.regio.areas.filter((item, index) =>
+        event.target.parentNode.index !== index
+      )
       event.target.parentNode.remove();
     });
   }
 
-  add(newAreas) {
-    this.regio.areas = newAreas;
-    this.regio.areas.map(area => {
-      var key = this.areas().length;
+  add(newAreas, init = true) {
+    if (init) this.regio.areas = newAreas;
+    newAreas.map(area => {
+      var key = this.nodes().length;
       this.regio.selectingNode = document.createElement("div");
       this.regio.selectingNode.classList.add('regio')
       this.regio.selectingNode.style.width = area.width;
@@ -135,7 +150,7 @@ export default class Regio {
       this.regio.selectingNode.style.left = area.left;
       this.regio.selectingNode.click = area.click;
       this.regio.selectingNode.index = key;
-      if (parseInt(area.width) > 15 || parseInt(area.height) > 15) {
+      if (parseInt(area.width) > 30 || parseInt(area.height) > 30) {
         this.element.appendChild(this.regio.selectingNode)
         if (this.config.resizable) {
           var regioEdit = document.createElement('div');
