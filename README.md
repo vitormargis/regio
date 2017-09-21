@@ -12,7 +12,7 @@
   var canvasElement = document.getElementsByClassName('canvas')[0];
 
   // Just by defining a new Ragio instance it will start working in the selected DOM node
-  var canvas = new Regio(canvasElement {
+  var canvas = new Regio(canvasElement, {
     drawable: true, //default
     removable: true //default
   });
