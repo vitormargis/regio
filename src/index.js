@@ -7,7 +7,8 @@ export default class Regio {
       movable: false,
       drawable: true,
       resizable: false,
-      removable: true
+      removable: true,
+      clickable: true
     }
 
     this.regio = {
@@ -24,7 +25,13 @@ export default class Regio {
       element.addEventListener('mouseup', this._mouseUp.bind(this));
     }
 
-    element.addEventListener('click', this._clickArea);
+    if (this.config.removable) {
+      element.addEventListener('click', this._remove.bind(this));
+    }
+
+    if (this.config.clickable) {
+      element.addEventListener('click', this._clickArea);
+    }
   }
 
   _mouseDown(event) {
@@ -103,6 +110,14 @@ export default class Regio {
     if (event.target.click) return event.target.click();
   }
 
+  _remove(event) {
+    if (!event.target.className.includes('rg-removable')) return;
+    this.regio.areas = this.regio.areas.filter((item, index) =>
+      event.target.parentNode.index !== index
+    )
+    event.target.parentNode.remove();
+  }
+
   on(event, callback) {
     this.element.addEventListener(event || 'click', event => {
       if (!event.target.className.includes('regio')) return;
@@ -119,7 +134,6 @@ export default class Regio {
   }
 
   remove(key, callback) {
-    console.log(key);
     if (key) {
       this.nodes(key).remove();
       this.regio.areas = this.regio.areas.filter((item, index) =>

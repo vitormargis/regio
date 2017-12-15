@@ -1,7 +1,7 @@
 {
   "name": "regio",
   "version": "0.0.1",
-  "description": "A wrapper to work with the Spotify Web API.",
+  "description": "Regio",
   "main": "lib/index.js",
   "scripts": {
     "clear": "rimraf lib",

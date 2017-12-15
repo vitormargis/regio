@@ -2,18 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spotify Wrapper Test</title>
+  <title>Regio</title>
   <style>
-  .canvas {
+body, html {
+  height: 100%;
+  min-height: 100%;
+}
+.canvas {
   box-sizing: border-box;
-  position: absolute;
+  position: relative;
   width: 100%;
   height: 100%;
+  min-height: 100%;
   top: 0;
   left: 0;
-  background: url(https://raw.githubusercontent.com/vitormargis/vizualize/master/presenter/layouts/01_dashboard_serpar_antecipar_confirmacao.jpg);
+  background-color: #222;
   background-size: 100%;
-  border: 15px solid #AAA;
+  border: 15px solid #111;
   cursor: default;
   background-repeat: no-repeat;
 }
@@ -99,7 +104,6 @@ input {
   font-family: sans-serif;
   cursor: pointer;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2)
-
 }
 
 </style>
@@ -109,8 +113,8 @@ input {
   <div class="canvas"></div>
   <a class="show-area-data">Show area data</a>
 
-<script src="./regio.min.js"></script>
-<!-- <script src="../dist/spotify-wrapper.umd.min.js"></script> -->
+  <script src="../dist/regio.umd.js"></script>
+  <script src="./bundle.js"></script>
 
 <script>
   var canvasElement = document.getElementsByClassName('canvas')[0]
@@ -121,7 +125,10 @@ input {
     removable: true
   });
 
-  function go(to){ window.open(to); }
+  function go(to){
+    console.log(to);
+    window.open(to);
+  }
 
   textarea.placeholder = "Type an URL";
   canvasElement.appendChild(textarea)
@@ -144,7 +151,7 @@ input {
       if (textareVal) return;
       textareVal = true;
       canvas.areas()[area.index].to = this.value;
-      canvas.areas()[area.index].click = this.value && go.bind(this, this.value)
+      area.click = this.value && go.bind(this, this.value)
       textarea.style.display = 'none'
     })
   }})
