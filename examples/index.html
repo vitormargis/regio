@@ -7,6 +7,8 @@
 body, html {
   height: 100%;
   min-height: 100%;
+  margin: 0;
+  padding: 0;
 }
 .canvas {
   box-sizing: border-box;
@@ -99,11 +101,11 @@ input {
   right: 15px;
   top: 15px;
   position: fixed;
-  background: #FFF;
+  background: #111;
   padding: 10px;
   font-family: sans-serif;
   cursor: pointer;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2)
+  color: #fff;
 }
 
 </style>
@@ -139,9 +141,9 @@ input {
     var textareVal = false
     var currentValue = canvas.areas()[area.index].to || ''
     textarea.value = currentValue;
-    textarea.style.top = parseInt(area.style.top) + parseInt(area.style.height) + 10 + 'px'
+    textarea.style.top = area.style.top ? parseInt(area.style.top) + parseInt(area.style.height) + 10 + 'px' : 'initial';
     textarea.style.right = area.style.right
-    textarea.style.bottom = area.style.bottom || area.style.top
+    textarea.style.bottom = area.style.bottom ? parseInt(area.style.bottom) - 40 + 'px' : 'initial'; 
     textarea.style.left = area.style.left
     textarea.style.width = area.style.width
     textarea.style.height = '30px'
